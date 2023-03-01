@@ -1,0 +1,11 @@
+.directory
+*/.directory
+*~
+.idea/
+falco-venv/
+*.pyc
+__pycache__/
+*/__pycache__/
+models/pretrained/
+datasets/
+experiments/
