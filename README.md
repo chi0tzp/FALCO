@@ -1,6 +1,14 @@
 # FALCO: Attribute-preserving Face Dataset Anonymization via Latent Code Optimization.
 
-Authors official PyTorch implementation of the [Attribute-preserving **F**ace Dataset **A**nonymization via **L**atent **C**ode **O**ptimization (CVPR 2023)](TODO). If you find this code useful for your research, please [cite]() our paper.
+Authors official PyTorch implementation of the [Attribute-preserving **F**ace Dataset **A**nonymization via **L**atent **C**ode **O**ptimization (CVPR 2023)](TODO). If you find this code useful for your research, please [cite](#citation) our paper.
+
+
+
+<p align="center">
+<img src="figs/overview.png" style="width: 70vw"/>
+<br><br>
+<img src="figs/teaser.png" style="width: 25vw"/>
+</p>
 
 
 
