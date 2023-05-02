@@ -45,8 +45,6 @@ def main():
         --algorithm         : set algorithm used to compute the nearest neighbors ('auto', 'ball_tree', 'kd_tree',
                               'brute')
         --metric            : set metric to use for distance computation
-
-        TODO: Implement kNN in PyTorch with or without CUDA acceleration (WIP::Christos)
         --cuda              : use CUDA (default)
         --no-cuda           : do not use CUDA
 
