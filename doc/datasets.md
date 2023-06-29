@@ -120,6 +120,45 @@ There are now four different sets of LFW images including the original and three
 
 Download the dataset following the instructions given [here](http://vis-www.cs.umass.edu/lfw/). The root directory of the dataset (`dataset_root`) should have the following structure:
 
+http://vis-www.cs.umass.edu/lfw/lfw.tgz
+
+http://vis-www.cs.umass.edu/lfw/lfw-names.txt
+
+```bash
+tar -xzvf lfw.tgz
 ```
+
+
+
+
+
+TODO
+
+```
+├── AJ_Cook
+│   └── AJ_Cook_0001.jpg
+├── AJ_Lamas
+│   └── AJ_Lamas_0001.jpg
+├── Aaron_Eckhart
+│   └── Aaron_Eckhart_0001.jpg
+├── Aaron_Guiel
+│   └── Aaron_Guiel_0001.jpg
+├── Aaron_Patterson
+│   └── Aaron_Patterson_0001.jpg
+├── Aaron_Peirsol
+│   ├── Aaron_Peirsol_0001.jpg
+│   ├── Aaron_Peirsol_0002.jpg
+│   ├── Aaron_Peirsol_0003.jpg
+│   └── Aaron_Peirsol_0004.jpg
+├── Aaron_Pena
+│   └── Aaron_Pena_0001.jpg
+├── ...
+├── Zumrati_Juma
+│   └── Zumrati_Juma_0001.jpg
+├── Zurab_Tsereteli
+│   └── Zurab_Tsereteli_0001.jpg
+├── Zydrunas_Ilgauskas
+│   └── Zydrunas_Ilgauskas_0001.jpg
+└── lfw-names.txt
 ```
 
