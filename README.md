@@ -3,11 +3,10 @@
 Authors official PyTorch implementation of the *Attribute-preserving **F**ace Dataset **A**nonymization via **L**atent **C**ode **O**ptimization (CVPR 2023, top-10%)*. If you find this code useful for your research, please [cite](#citation) our paper.
 
 
->  **Attribute-preserving Face Dataset Anonymization via Latent Code Optimization**<br>Simone Barattin\*, Christos Tzelepis\*, Ioannis Patras, and Nicu Sebe (\* denotes co-first authorship)<br>
+>  [**Attribute-preserving Face Dataset Anonymization via Latent Code Optimization**](https://openaccess.thecvf.com/content/CVPR2023/papers/Barattin_Attribute-Preserving_Face_Dataset_Anonymization_via_Latent_Code_Optimization_CVPR_2023_paper.pdf)<br>Simone Barattin\*, Christos Tzelepis\*, Ioannis Patras, and Nicu Sebe (\* denotes co-first authorship)<br>
 >  IEEE Conference on Computer Vision and Pattern Recognition (CVPR 2023, highlight/top-10%)<br>
->  Pre-print: https://arxiv.org/abs/2303.11296<br>
->
->  **Abstract:** This work addresses the problem of anonymizing the identity of faces in a dataset of images, such that the privacy of those depicted is not violated, while at the same time the dataset is useful for downstream task such as for training machine learning models. To the best of our knowledge, we are the first to explicitly address this issue and deal with two major drawbacks of the existing state-of-the-art approaches, namely that they (i) require the costly training of additional, purpose-trained neural networks, and/or (ii) fail to retain the facial attributes of the original images in the anonymized counterparts, the preservation of which is of paramount importance for their use in downstream tasks. We accordingly present a task-agnostic anonymization procedure that directly optimises the images' latent representation in the latent space of a \textit{pre-trained} GAN. By optimizing the latent codes directly, we ensure both that the identity is of a desired distance away from the original (with an identity obfuscation loss), whilst preserving the facial attributes (using a novel feature-matching loss in FaRL's deep feature space). We demonstrate through a series of both qualitative and quantitative experiments that our method is capable of anonymizing the identity of the images whilst--crucially--better-preserving the facial attributes.
+>  
+>**Abstract:** This work addresses the problem of anonymizing the identity of faces in a dataset of images, such that the privacy of those depicted is not violated, while at the same time the dataset is useful for downstream task such as for training machine learning models. To the best of our knowledge, we are the first to explicitly address this issue and deal with two major drawbacks of the existing state-of-the-art approaches, namely that they (i) require the costly training of additional, purpose-trained neural networks, and/or (ii) fail to retain the facial attributes of the original images in the anonymized counterparts, the preservation of which is of paramount importance for their use in downstream tasks. We accordingly present a task-agnostic anonymization procedure that directly optimises the images' latent representation in the latent space of a \textit{pre-trained} GAN. By optimizing the latent codes directly, we ensure both that the identity is of a desired distance away from the original (with an identity obfuscation loss), whilst preserving the facial attributes (using a novel feature-matching loss in FaRL's deep feature space). We demonstrate through a series of both qualitative and quantitative experiments that our method is capable of anonymizing the identity of the images whilst--crucially--better-preserving the facial attributes.
 
 <p align="center">
 <img src="figs/overview.png" style="width: 70vw"/>
@@ -361,12 +360,12 @@ python visualize_dataset.py -v --dataset=celebahq --fake-nn-map=datasets/fake/fa
 ## Citation
 
 ```bibtex
-@InProceedings{falco2023cvpr,
-    author    = {Barattin, Simone and Tzelepis, Christos and Patras, Ioannis and Sebe, Nicu},
-    title     = {Attribute-preserving Face Dataset Anonymization via Latent Code Optimization},
-    booktitle = {Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-    month     = {June},
-    year      = {2023},
+@inproceedings{barattin2023attribute,
+  title={Attribute-preserving Face Dataset Anonymization via Latent Code Optimization},
+  author={Barattin, Simone and Tzelepis, Christos and Patras, Ioannis and Sebe, Nicu},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={8001--8010},
+  year={2023}
 }
 ```
 
