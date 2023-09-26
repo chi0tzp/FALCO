@@ -159,7 +159,7 @@ The generated images along with the corresponding latent codes and features will
 python create_fake_dataset.py -v --num-samples=60000
 ```
 
-will generate 60,000 images/latent codes/features and will store them under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-11000-CLIP-FaRL-DINO-ArcFace`. 
+will generate 60,000 images/latent codes/features and will store them under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace`. 
 
 
 ### Step 3: Nearest neighbor pairing: `pair_nn.py` 
