@@ -56,7 +56,7 @@ E4E = ('https://www.dropbox.com/s/1jujsdr6ytzilym/e4e.tar?dl=1',
 ##                                                     [ SFD ]                                                        ##
 ##                                                                                                                    ##
 ########################################################################################################################
-SFD = ('https://www.dropbox.com/s/jssqpwyp4edp20o/sfd.tar?dl=1',
+SFD = ('https://www.dropbox.com/scl/fi/eo6c8prmvuhpvpx7sh4u8/sfd.tar?rlkey=7bpo0kxennilgz2kglwpgozy5&dl=1',
        '2bea5f1c10110e356eef3f4efd45169100b9c7704eb6e6abd309df58f34452d4')
 
 ########################################################################################################################
@@ -64,7 +64,7 @@ SFD = ('https://www.dropbox.com/s/jssqpwyp4edp20o/sfd.tar?dl=1',
 ##                                             [ GenForce GAN Generators ]                                            ##
 ##                                                                                                                    ##
 ########################################################################################################################
-GENFORCE = ('https://www.dropbox.com/s/bemmhblro50fdk2/genforce.tar?dl=1',
+GENFORCE = ('https://www.dropbox.com/scl/fi/yec5wgg8j388fc0saigbj/genforce.tar?rlkey=kkhkkxvnc985746ichtdyct3f&dl=1',
             '63284b4f4ffeac38037061fd175c462afff82bbe570ed80092720a724a67a6dc')
 
 GENFORCE_MODELS = {
