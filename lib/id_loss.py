@@ -19,11 +19,6 @@ class IDLoss(nn.Module):
         for module in [self.facenet, self.face_pool]:
             for param in module.parameters():
                 param.requires_grad = False
-        
-        self.zr = torch.randn(512).to("cuda:0")
-        self.zr /= torch.linalg.norm(self.zr, dim=0)
-        self.radian = np.deg2rad(45)
-        self.zi = None
 
         self.id_transform = transforms.Compose([transforms.Resize(256, antialias=True),
                                                 transforms.CenterCrop(256)])
@@ -41,7 +36,7 @@ class IDLoss(nn.Module):
         y_feats = y_feats.detach()
         loss = 0
         for i in range(n_samples):
-            loss = torch.abs(y_hat_feats[i].dot(y_feats[i]) - self.id_margin)
+            loss += torch.abs(y_hat_feats[i].dot(y_feats[i]) - self.id_margin)
 
         return loss / n_samples
 
