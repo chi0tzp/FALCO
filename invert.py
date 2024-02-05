@@ -10,7 +10,7 @@ from tqdm import tqdm
 import cv2
 from PIL import Image
 from models.load_generator import load_generator
-from lib import tensor2image
+from lib import tensor2image, DECA_model, calculate_shapemodel
 
 
 def get_img_id(img_file):
@@ -94,11 +94,17 @@ def main():
     ##                                       [ Inverted Dataset Directory  ]                                          ##
     ##                                                                                                                ##
     ####################################################################################################################
-    out_dir = osp.join('datasets', 'inv', '{}'.format(args.dataset))
+    out_dir = osp.join('{}'.format(args.dataset_root), 'inv')
+    landmarks_dir = osp.join(out_dir, 'landmarks')
+    angles_dir = osp.join(out_dir, 'angles')
     if args.verbose:
         print("#. Create dir for storing the inverted {} dataset...".format(args.dataset))
         print("  \\__{}".format(out_dir))
+        print("  \\__{}".format(landmarks_dir))
+        print("  \\__{}".format(angles_dir))
     os.makedirs(out_dir, exist_ok=True)
+    os.makedirs(landmarks_dir, exist_ok=True)
+    os.makedirs(angles_dir, exist_ok=True)
 
     ####################################################################################################################
     ##                                                                                                                ##
@@ -149,6 +155,15 @@ def main():
 
     ####################################################################################################################
     ##                                                                                                                ##
+    ##                                                    [ DECA ]                                                    ##
+    ##                                                                                                                ##
+    ####################################################################################################################
+    deca = DECA_model(device='cuda')
+    deca_transform = transforms.Compose([transforms.Resize((256, 256)),
+                                         transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+
+    ####################################################################################################################
+    ##                                                                                                                ##
     ##                                                [ Data Loader ]                                                 ##
     ##                                                                                                                ##
     ####################################################################################################################
@@ -164,15 +179,9 @@ def main():
     alignment_errors_file = None
     face_detection_errors_file = None
     ####################################################################################################################
-    ##                                                   [ CelebA ]                                                   ##
-    ####################################################################################################################
-    if args.dataset == 'celeba':
-        raise NotImplementedError
-
-    ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
     ####################################################################################################################
-    elif args.dataset == 'celebahq':
+    if args.dataset == 'celebahq':
         dataset = CelebAHQ(root_dir=args.dataset_root, subset='train+val+test')
         dataloader = data.DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=False)
 
@@ -184,14 +193,12 @@ def main():
         out_codes_dir = osp.join(out_dir, 'latent_codes')
         os.makedirs(out_codes_dir, exist_ok=True)
 
-        # TODO: Copy annotations dir
-
         # Create files to store errors on alignment and face detection
         alignment_errors_file = osp.join(out_dir, 'alignment_errors.txt')
-        with open(alignment_errors_file, 'w') as f:
+        with open(alignment_errors_file, 'w'):
             pass
         face_detection_errors_file = osp.join(out_dir, 'face_detection_errors.txt')
-        with open(face_detection_errors_file, 'w') as f:
+        with open(face_detection_errors_file, 'w'):
             pass
 
     ####################################################################################################################
@@ -251,6 +258,18 @@ def main():
                 img_recon_file = osp.join(out_data_dir, '{}_recon.jpg'.format(get_img_id(data_batch[2][i])))
                 tensor2image(img_recon[i].cpu(), adaptive=True).save(
                     img_recon_file, "JPEG", quality=90, subsampling=0, progressive=True)
+
+        ################################################################################################################
+        ##              [ Extract facial landmarks and the Euler angles (yaw, pitch, roll) using DECA ]               ##
+        ################################################################################################################
+        with torch.no_grad():
+            landmarks2d, angles = calculate_shapemodel(deca_model=deca,
+                                                       images=deca_transform(img_recon).to('cuda'))
+        for i in range(landmarks2d.shape[0]):
+            torch.save(landmarks2d[i].T.unsqueeze(0).cpu(),
+                       osp.join(landmarks_dir, '{}.pt'.format(get_img_id(data_batch[2][i]))))
+            torch.save(angles[i].unsqueeze(0).cpu(),
+                       osp.join(angles_dir, '{}.pt'.format(get_img_id(data_batch[2][i]))))
 
 
 if __name__ == '__main__':

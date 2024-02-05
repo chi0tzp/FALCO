@@ -15,3 +15,13 @@ urllib3
 requests
 scipy
 ninja
+# ===
+kornia
+open-clip-torch
+facenet-pytorch
+face-alignment
+xformers
+# pip install "git+https://github.com/facebookresearch/pytorch3d.git"
+yacs
+chumpy
+# python -m pip install numpy==1.23.1

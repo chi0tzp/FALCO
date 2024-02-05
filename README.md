@@ -40,6 +40,16 @@ python -m ipykernel install --user --name=falco-venv
 
 
 
+```
+DEBUGGING?
+```
+
+
+
+
+
+
+
 ## Prerequisite pre-trained models
 
 Download the prerequisite pre-trained models (GAN generators [1], e4e inversion encoder [2], SFD face detector [3], FaRL [4], and ArcFace [5]):
@@ -48,22 +58,39 @@ Download the prerequisite pre-trained models (GAN generators [1], e4e inversion 
 python download_models.py
 ```
 
-This will create a directory `models/pretrained` with the following sub-directories (~3.5 GB):
+This will create a directory `models/pretrained` with the following sub-directories (~XXX GB):
 
 ```
 ./models/pretrained/
 ├── arcface
-│   └── model_ir_se50.pt
+│   └── model_ir_se50.pth
+├── deca
+│   ├── FLAME2020.zip
+│   ├── FLAME_albedo_from_BFM.npz
+│   ├── Readme.pdf
+│   ├── deca_model.tar
+│   ├── female_model.pkl
+│   ├── fixed_displacement_256.npy
+│   ├── generic_model.pkl
+│   ├── head_template.obj
+│   ├── landmark_embedding.npy
+│   ├── male_model.pkl
+│   ├── mean_texture.jpg
+│   ├── texture_data_256.npy
+│   ├── uv_face_eye_mask.png
+│   └── uv_face_mask.png
 ├── e4e
 │   ├── e4e_ffhq_encode.pt
 │   ├── model_ir_se50.pth
 │   └── shape_predictor_68_face_landmarks.dat
 ├── farl
-│   ├── FaRL-Base-Patch16-LAIONFace20M-ep16.pth
-│   └── FaRL-Base-Patch16-LAIONFace20M-ep64.pth
+│   ├── FaRL-Base-Patch16-LAIONFace20M-ep16.pth
+│   └── FaRL-Base-Patch16-LAIONFace20M-ep64.pth
+├── gaze
+│   └── gaze_estimation_model.tar
 ├── genforce
-│   ├── stylegan2_ffhq512.pth
-│   └── stylegan2_ffhq1024.pth
+│   ├── stylegan2_ffhq1024.pth
+│   └── stylegan2_ffhq512.pth
 └── sfd
     └── s3fd-619a316812.pth
 ```

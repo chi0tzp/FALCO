@@ -5,7 +5,7 @@ import hashlib
 import tarfile
 import time
 import urllib.request
-from lib import GENFORCE, GENFORCE_MODELS, E4E, SFD, FARL, ARCFACE
+from lib import GENFORCE, SFD, E4E, ARCFACE, FARL, DECA, GAZE
 
 
 def reporthook(count, block_size, total_size):
@@ -17,7 +17,7 @@ def reporthook(count, block_size, total_size):
     progress_size = int(count * block_size)
     speed = int(progress_size / (1024 * duration))
     percent = min(int(count * block_size * 100 / total_size), 100)
-    sys.stdout.write("\r      \\__%d%%, %d MB, %d KB/s, %d seconds passed" %
+    sys.stdout.write("\r  \\__%d%%, %d MB, %d KB/s, %d seconds passed" %
                      (percent, progress_size / (1024 * 1024), speed, duration))
 
     sys.stdout.flush()
@@ -38,7 +38,7 @@ def download(src, sha256sum, dest):
 
         sha256_check = sha256_hash.hexdigest() == sha256sum
         print()
-        print("      \\__Check sha256: {}".format("OK!" if sha256_check else "Error"))
+        print("  \\__Check sha256: {}".format("OK!" if sha256_check else "Error"))
         if not sha256_check:
             raise Exception("Error: Invalid sha256 sum: {}".format(sha256_hash.hexdigest()))
 
@@ -47,66 +47,78 @@ def download(src, sha256sum, dest):
     os.remove(tmp_tar)
 
 
+def files_exist(d, content):
+    r = True
+    for f in content:
+        r = osp.exists(osp.join(d, f)) and r
+    return r
+
+
 def main():
-    """Download pre-trained GenForce GAN generators [1], e4e GAN inversion encoder [2], SFD face detector [3], and
-       FaRL [4] models.
+    """Download pre-trained GenForce GAN generators [1], SFD [2], e4e [3], ArcFace [4], FaRL [5], DECA [6], and the
+    gaze estimator [7]. The pretrained weights will be stored under `models/pretrained/`.
 
     References:
          [1] https://genforce.github.io/
-         [2] Tov, Omer, et al. "Designing an encoder for stylegan image manipulation."
-            ACM Transactions on Graphics (TOG) 40.4 (2021): 1-14.
-         [3] Zhang, Shifeng, et al. "S3FD: Single shot scale-invariant face detector." Proceedings of the IEEE
+         [2] Zhang, Shifeng, et al. "S3FD: Single shot scale-invariant face detector." Proceedings of the IEEE
              international conference on computer vision. 2017.
-         [4] Zheng, Yinglin, et al. "General Facial Representation Learning in a Visual-Linguistic Manner."
+         [3] Tov, Omer, et al. "Designing an encoder for stylegan image manipulation." ACM Transactions on Graphics
+             (TOG) 40.4 (2021): 1-14.
+         [4] Deng, Jiankang, et al. "Arcface: Additive angular margin loss for deep face recognition." Proceedings of
+             the IEEE/CVF conference on computer vision and pattern recognition. 2019.
+         [5] Zheng, Yinglin, et al. "General Facial Representation Learning in a Visual-Linguistic Manner."
              Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. 2022.
+         [6] Yao Feng, Haiwen Feng, Michael J Black, and Timo Bolkart. Learning an animatable detailed 3d face model
+             from in-the-wild images. ACM Transactions on Graphics (TOG), 40(4):1–13, 2021
+         [7] Xucong Zhang, Seonwook Park, Thabo Beeler, Derek Bradley, Siyu Tang, and Otmar Hilliges. Eth-xgaze: A large
+             scale dataset for gaze estimation under extreme head pose and gaze variation. In European Conference on
+             Computer Vision, pages 365–381. Springer, 2020
     """
     # Create pre-trained models root directory
     pretrained_models_root = osp.join('models', 'pretrained')
     os.makedirs(pretrained_models_root, exist_ok=True)
 
-    # Download the following pre-trained GAN generators (under models/pretrained/)
     print("#. Download pre-trained GAN generators...")
-    print("  \\__.GenForce")
-    download_genforce_models = False
-    for k, v in GENFORCE_MODELS.items():
-        if not osp.exists(osp.join(pretrained_models_root, 'genforce', v[0])):
-            download_genforce_models = True
-            break
-    if download_genforce_models:
+    if files_exist(d=osp.join(pretrained_models_root, GENFORCE[2]), content=GENFORCE[3]):
+        print("  \\__Already exist.")
+    else:
         download(src=GENFORCE[0], sha256sum=GENFORCE[1], dest=pretrained_models_root)
-    else:
-        print("      \\__Already exists.")
-
-    print("#. Download pre-trained e4e inversion encoder...")
-    print("  \\__.e4e")
-    if osp.exists(osp.join(pretrained_models_root, 'e4e', 'model_ir_se50.pth')) and \
-        osp.exists(osp.join(pretrained_models_root, 'e4e', 'e4e_ffhq_encode.pt')) and \
-            osp.exists(osp.join(pretrained_models_root, 'e4e', 'shape_predictor_68_face_landmarks.dat')):
-        print("      \\__Already exists.")
-    else:
-        download(src=E4E[0], sha256sum=E4E[1], dest=pretrained_models_root)
 
     print("#. Download pre-trained SFD face detector model...")
-    print("  \\__.Face detector (SFD)")
-    if osp.exists(osp.join(pretrained_models_root, 'sfd', 's3fd-619a316812.pth')):
-        print("      \\__Already exists.")
+    if files_exist(d=osp.join(pretrained_models_root, SFD[2]), content=SFD[3]):
+        print("  \\__Already exists.")
     else:
         download(src=SFD[0], sha256sum=SFD[1], dest=pretrained_models_root)
 
+    print("#. Download pre-trained e4e GAN inversion model...")
+    if files_exist(d=osp.join(pretrained_models_root, E4E[2]), content=E4E[3]):
+        print("  \\__Already exists.")
+    else:
+        download(src=E4E[0], sha256sum=E4E[1], dest=pretrained_models_root)
+
+    print("#. Download pre-trained ArcFace model...")
+    if files_exist(d=osp.join(pretrained_models_root, ARCFACE[2]), content=ARCFACE[3]):
+        print("  \\__Already exists.")
+    else:
+        download(src=ARCFACE[0], sha256sum=ARCFACE[1], dest=pretrained_models_root)
+
     print("#. Download pre-trained FaRL for Facial Representation Learning ...")
-    print("  \\__.FaRL")
-    if osp.exists(osp.join(pretrained_models_root, 'farl', 'FaRL-Base-Patch16-LAIONFace20M-ep16.pth')) and \
-            osp.exists(osp.join(pretrained_models_root, 'farl', 'FaRL-Base-Patch16-LAIONFace20M-ep64.pth')):
-        print("      \\__Already exists.")
+    if files_exist(d=osp.join(pretrained_models_root, FARL[2]), content=FARL[3]):
+        print("  \\__Already exists.")
     else:
         download(src=FARL[0], sha256sum=FARL[1], dest=pretrained_models_root)
 
-    print("#. Download pre-trained ArcFace model...")
-    print("  \\__.ArcFace")
-    if osp.exists(osp.join(pretrained_models_root, 'arcface', 'model_ir_se50.pth')):
-        print("      \\__Already exists.")
+    print("#. Download pre-trained DECA model...")
+    if files_exist(d=osp.join(pretrained_models_root, DECA[2]), content=DECA[3]):
+        print("  \\__Already exists.")
     else:
-        download(src=ARCFACE[0], sha256sum=ARCFACE[1], dest=pretrained_models_root)
+        download(src=DECA[0], sha256sum=DECA[1], dest=pretrained_models_root)
+
+    print("#. Download pre-trained Gaze estimation model...")
+    if files_exist(d=osp.join(pretrained_models_root, GAZE[2]), content=GAZE[3]):
+        print("  \\__Already exists.")
+    else:
+        download(src=GAZE[0], sha256sum=GAZE[1], dest=pretrained_models_root)
 
 
 if __name__ == '__main__':

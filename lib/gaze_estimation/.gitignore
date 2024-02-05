@@ -1,0 +1,6 @@
+example/
+__pycache__
+*.dat
+*.png
+*.JPG
+*.jpg

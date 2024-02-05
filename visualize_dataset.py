@@ -1,3 +1,4 @@
+import sys
 import os
 import os.path as osp
 import argparse
@@ -9,7 +10,20 @@ from PIL import ImageFont
 from lib import DATASETS, CelebAHQ
 
 
-def show_images(data_batch, nn_type, inv, anon, out_fig_file=None):
+def draw_landmarks():
+    pass
+
+
+def draw_angles():
+    pass
+
+
+def show_images(data_batch, nn_type, inv, anon,
+                plot_orig_landmarks=False, plot_orig_angles=False,
+                plot_nn_landmarks=False, plot_nn_angles=False,
+                plot_recon_landmarks=False, plot_recon_angles=False,
+                plot_anon_landmarks=False, plot_anon_angles=False,
+                out_fig_file=None):
     """Show figure with images of:
 
           i) the original dataset, and/or
@@ -20,26 +34,59 @@ def show_images(data_batch, nn_type, inv, anon, out_fig_file=None):
     in the above order; i.e., 'Original', 'Recon (e4e)', 'Fake NN', 'Anon'.
 
     Args:
-        data_batch (list) : data batch as returned by the data loader having the following structure:
-                                -- data_batch[0]: `img_orig`
-                                -- data_batch[2]: `img_orig_filename`
-                                -- data_batch[3]: `img_nn`
-                                -- data_batch[5]: `img_recon`
-                                -- data_batch[7]: `img_anon`
-        nn_type (str)     : type of NN mapping (based on the given file). If None is given, the corresponding tensor
-                            (`img_nn`) will be zero, and it will not be plotted in the figure.
-        inv (bool)        : show inversion results; i.e., reconstructed images produced by e4e using `invert.py`
-        anon (str)        : directory of the anonymized version of the dataset produced using `anonymize.py`. If None is
-                            given, the corresponding tensor (`img_anon`) will be zero, and it will not be plotted in the
-                            figure.
-        out_fig_file (str): output figure filename
+        data_batch (list)           : data batch as returned by the data loader having the following structure:
+                                          -- data_batch[0]  : `img_orig`
+                                          -- data_batch[1]  : `img_orig_attr`
+                                          -- data_batch[2]  : `img_orig_path`
+                                          -- data_batch[3]  : `img_orig_landmarks`
+                                          -- data_batch[4]  : `img_orig_angles`
+                                          -- data_batch[5]  : `img_nn`
+                                          -- data_batch[6]  : `img_nn_code`
+                                          -- data_batch[7]  : `img_nn_landmarks`
+                                          -- data_batch[8]  : `img_nn_angles`
+                                          -- data_batch[9]  : `img_recon`
+                                          -- data_batch[10] : `img_recon_code`
+                                          -- data_batch[11] : `img_recon_landmarks`
+                                          -- data_batch[12] : `img_recon_angles`
+                                          -- data_batch[13] : `img_anon`
+                                          -- data_batch[14] : `img_anon_code`
+                                          -- data_batch[15] : `img_anon_landmarks`
+                                          -- data_batch[16] : `img_anon_angles`
+        nn_type (str)               : type of NN mapping (based on the given file). If None is given, the corresponding
+                                      tensor (`img_nn`) will be zero, and it will not be plotted in the figure.
+        inv (bool)                  : show inversion results; i.e., reconstructed images produced by e4e using
+                                      `invert.py`
+        anon (str)                  : directory of the anonymized version of the dataset produced using `anonymize.py`.
+                                      If None is given, the corresponding tensor (`img_anon`) will be zero, and it will
+                                      not be plotted in the figure.
+        plot_orig_landmarks (bool)  : plot landmarks of the original images
+        plot_orig_angles (bool)     : plot Euler angles (yaw, pitch, roll) of the original images
+        plot_nn_landmarks (bool)    : plot landmarks of the fake NN images
+        plot_nn_angles (bool)       : plot Euler angles (yaw, pitch, roll) of the fake NN images
+        plot_recon_landmarks (bool) : plot landmarks of the reconstructed (inverted) images
+        plot_recon_angles (bool)    : plot Euler angles (yaw, pitch, roll) of the reconstructed (inverted) images
+        plot_anon_landmarks (bool)  : plot landmarks of the anonymized images
+        plot_anon_angles (bool)     : plot Euler angles (yaw, pitch, roll) of the anonymized images
+        out_fig_file (str)          : output figure filename
 
     """
     img_orig = data_batch[0]
+    img_orig_attr = data_batch[1]
     img_orig_filename = data_batch[2]
-    img_nn = data_batch[3]
-    img_recon = data_batch[5]
-    img_anon = data_batch[7]
+    img_orig_landmarks = data_batch[3]
+    img_orig_angles = data_batch[4]
+    img_nn = data_batch[5]
+    img_nn_code = data_batch[6]
+    img_nn_landmarks = data_batch[7]
+    img_nn_angles = data_batch[8]
+    img_recon = data_batch[9]
+    img_recon_code = data_batch[10]
+    img_recon_landmarks = data_batch[11]
+    img_recon_angles = data_batch[12]
+    img_anon = data_batch[13]
+    img_anon_code = data_batch[14]
+    img_anon_landmarks = data_batch[15]
+    img_anon_angles = data_batch[16]
 
     # Tensor to PIL image transform
     tensor2pil = transforms.ToPILImage()
@@ -156,6 +203,7 @@ def show_images(data_batch, nn_type, inv, anon, out_fig_file=None):
         # Original (real) image
         img_orig_i = tensor2pil(img_orig[i]).resize((img_size, img_size))
         grid.paste(img_orig_i, (0, header_h + i * img_size))
+
         img_orig_name_i_draw = ImageDraw.Draw(grid)
         img_orig_name_i = '{}'.format(osp.basename(img_orig_filename[i]))
         img_orig_name_i_size = img_name_font.getbbox(img_orig_name_i)
@@ -168,20 +216,56 @@ def show_images(data_batch, nn_type, inv, anon, out_fig_file=None):
                                   font=img_name_font,
                                   fill=img_name_font_colour)
 
+        # TODO: plot landmarks and/or angles
+        if plot_orig_landmarks:
+            img_orig_landmarks_i = img_orig_landmarks[i]
+            raise NotImplementedError
+
+        if plot_orig_angles:
+            img_orig_angles_i = img_orig_angles[i]
+            raise NotImplementedError
+
         # e4e inversion (reconstructed) image
         if inv:
             img_recon_i = tensor2pil(img_recon[i]).resize((img_size, img_size))
             grid.paste(img_recon_i, (recon_col * img_size, header_h + i * img_size))
+
+            # TODO: plot landmarks and/or angles
+            if plot_recon_landmarks:
+                img_recon_landmarks_i = img_recon_landmarks[i]
+                raise NotImplementedError
+
+            if plot_recon_angles:
+                img_recon_angles_i = img_recon_angles[i]
+                raise NotImplementedError
 
         # Nearest fake neighbor image
         if nn_type is not None:
             img_nn_i = tensor2pil(img_nn[i]).resize((img_size, img_size))
             grid.paste(img_nn_i, (nn_col * img_size, header_h + i * img_size))
 
+            # TODO: plot landmarks and/or angles
+            if plot_nn_landmarks:
+                img_nn_landmarks_i = img_nn_landmarks[i]
+                raise NotImplementedError
+
+            if plot_nn_angles:
+                img_nn_angles_i = img_nn_angles[i]
+                raise NotImplementedError
+
         # Anonymized image
         if anon is not None:
             img_anon_i = tensor2pil(img_anon[i]).resize((img_size, img_size))
             grid.paste(img_anon_i, (anon_col * img_size, header_h + i * img_size))
+
+            # TODO: plot landmarks and/or angles
+            if plot_anon_landmarks:
+                img_anon_landmarks_i = img_anon_landmarks[i]
+                raise NotImplementedError
+
+            if plot_anon_angles:
+                img_anon_angles_i = img_anon_angles[i]
+                raise NotImplementedError
 
     # Save figure
     if out_fig_file is not None:
@@ -189,6 +273,12 @@ def show_images(data_batch, nn_type, inv, anon, out_fig_file=None):
 
     # Show grid
     grid.show()
+
+
+"""
+python visualize_dataset.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/
+python visualize_dataset.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --fake-nn-map=
+"""
 
 
 def main():
@@ -301,10 +391,11 @@ def main():
                 out_fig_file += '_{}.jpg'.format(osp.basename(args.fake_nn_map).split('.')[0])
             out_fig_file = osp.join(save_dir, out_fig_file)
 
-        show_images(data_batch=data_batch,
-                    nn_type=dataset.nn_type,
-                    inv=args.inv,
-                    anon=args.anon,
+        show_images(data_batch=data_batch, nn_type=dataset.nn_type, inv=args.inv, anon=args.anon,
+                    plot_orig_landmarks=False, plot_orig_angles=False,
+                    plot_nn_landmarks=False, plot_nn_angles=False,
+                    plot_recon_landmarks=False, plot_recon_angles=False,
+                    plot_anon_landmarks=False, plot_anon_angles=False,
                     out_fig_file=out_fig_file)
 
         input("__> Press ENTER to continue...\n")
