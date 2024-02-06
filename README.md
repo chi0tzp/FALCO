@@ -164,6 +164,10 @@ datasets/features/celebahq/
 
 
 
+New Step 2: `extract_pose.py`
+
+
+
 ### Step 2: Fake dataset creation: `create_fake_dataset.py`
 
 In order to create a pool of fake images, along with their latent codes in W+/S spaces and feature representations in the CLIP [6] and/or FaRL [4] and/or DINO [7] and/or ArcFace [5] spaces, use the following script: 

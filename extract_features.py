@@ -344,7 +344,7 @@ def main():
             with torch.no_grad():
                 landmarks2d, angles = calculate_shapemodel(deca_model=deca_model,
                                                            images=deca_img_transform(data_batch[0]).to(device))
-            img_feat = torch.cat([landmarks2d.reshape(args.batch_size, -1), angles], dim=1)
+            img_feat = torch.cat([landmarks2d.reshape(landmarks2d.shape[0], -1), angles], dim=1)
             deca_features.append(img_feat.cpu())
 
     # Save dataset images' filenames
