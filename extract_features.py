@@ -1,4 +1,3 @@
-import sys
 import os
 import os.path as osp
 import argparse
@@ -132,8 +131,6 @@ def main():
         openclip_model, _, _ = open_clip.create_model_and_transforms(model_name='ViT-B-32',
                                                                      pretrained='laion2b_s34b_b79k')
         openclip_model.eval().to(device)
-        # TODO: is this needed?
-        # openclip_model.float()
         openclip_img_transform = transforms.Compose([transforms.Resize(224, antialias=True),
                                                      transforms.CenterCrop(224),
                                                      transforms.Normalize((0.48145466, 0.4578275, 0.40821073),
@@ -250,7 +247,6 @@ def main():
         if args.verbose:
             print("#. Build pre-trained DECA model...")
 
-        # TODO: put to eval???
         deca_model = DECA_model(device=device)
         deca_img_transform = transforms.Compose([transforms.Resize((256, 256)),
                                                  transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
@@ -307,9 +303,6 @@ def main():
         for f in data_batch[2]:
             img_orig_id.append(osp.basename(f))
         img_filenames.extend(list(img_orig_id))
-
-        print("Processing images:")
-        print(img_orig_id)
 
         # Calculate CLIP features
         if not args.no_clip:

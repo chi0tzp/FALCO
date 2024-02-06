@@ -30,6 +30,9 @@ pip install -r requirements.txt
 
 # Install CLIP (for obtaining the CLIP and FaRL ViT features)
 pip install git+https://github.com/openai/CLIP.git
+
+# Install PyTorch3D
+pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 ```
 
 For using the aforementioned virtual environment in a Jupyter Notebook, you need to manually add the kernel as follows:
@@ -41,12 +44,19 @@ python -m ipykernel install --user --name=falco-venv
 
 
 ```
-DEBUGGING?
+DEBUGGING: Replace getargspec call for Python 3.11 
+==================================================
+File "***/FALCO/falco-venv/lib/python3.11/site-packages/chumpy/ch.py", line 1203, in _depends_on
+    want_out = 'out' in inspect.getargspec(func).args
+                        ^^^^^^^^^^^^^^^^^^
+AttributeError: module 'inspect' has no attribute 'getargspec'. Did you mean: 'getargs'?
+
+
+want_out = 'out' in inspect.getargspec(func).args
+vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+want_out = 'out' in inspect.getfullargspec(func).args
+
 ```
-
-
-
-
 
 
 

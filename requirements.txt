@@ -3,7 +3,7 @@ torchvision
 ipython
 ipykernel
 ipywidgets
-numpy
+numpy==1.23.1  # python -m pip install numpy==1.23.1
 scikit-learn
 scikit-image
 Pillow
@@ -24,4 +24,3 @@ xformers
 # pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 yacs
 chumpy
-# python -m pip install numpy==1.23.1
