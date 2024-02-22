@@ -1,3 +1,4 @@
+import sys
 import os
 import os.path as osp
 import argparse
@@ -300,7 +301,8 @@ def main():
     dino_features = []
     dinov2_features = []
     arcface_features = []
-    deca_features = []
+    deca_landmarks = []
+    deca_angles = []
     for i in tqdm(range(args.num_samples)):
         # Un-squeeze current latent code in shape [1, dim] and create hash code for it
         z = zs[i, :].unsqueeze(0)
@@ -367,18 +369,16 @@ def main():
         with torch.no_grad():
             landmarks2d, angles = calculate_shapemodel(deca_model=deca_model,
                                                        images=deca_img_transform(img).to(device))
-        torch.save(landmarks2d.cpu(), osp.join(latent_code_dir, 'landmarks.pt'))
-        torch.save(angles.cpu(), osp.join(latent_code_dir, 'angles.pt'))
+        torch.save(landmarks2d.reshape(landmarks2d.shape[0], -1).cpu(), osp.join(latent_code_dir, 'deca_landmarks.pt'))
+        torch.save(angles.cpu(), osp.join(latent_code_dir, 'deca_angles.pt'))
 
         if not args.no_deca:
-            img_feat = torch.cat([landmarks2d.reshape(1, -1), angles], dim=1)
-            deca_features.append(img_feat.cpu())
-            torch.save(img_feat.cpu(), osp.join(latent_code_dir, 'deca_features.pt'))
-            deca_features.append(img_feat.cpu())
+            deca_landmarks.append(landmarks2d.reshape(landmarks2d.shape[0], -1).cpu())
+            deca_angles.append(angles.cpu())
 
         # Save image
         tensor2image(img.cpu(), adaptive=True).save(osp.join(latent_code_dir, 'image.jpg'),
-                                                    "JPEG", quality=95, subsampling=0, progressive=True)
+                                                    "JPEG", quality=75, subsampling=0, progressive=True)
 
         # Save latent codes in W and S spaces
         torch.save(wp.cpu(), osp.join(latent_code_dir, 'latent_code_w+.pt'))
@@ -447,14 +447,21 @@ def main():
             print("  \\__Save @ {}".format(arcface_features_file))
         torch.save(arcface_features, arcface_features_file)
 
-    # Save DECA features
+    # Save DECA landmarks and angles
     if not args.no_deca:
-        deca_features = torch.cat(deca_features)
-        deca_features_file = osp.join(out_dir, 'deca_features.pt')
+        deca_landmarks = torch.cat(deca_landmarks)
+        deca_landmarks_file = osp.join(out_dir, 'deca_landmarks.pt')
         if args.verbose:
-            print("  \\__DECA features : {}".format(deca_features.shape))
-            print("  \\__Save @ {}".format(deca_features_file))
-        torch.save(deca_features, deca_features_file)
+            print("  \\__DECA landmarks : {}".format(deca_landmarks.shape))
+            print("  \\__Save @ {}".format(deca_landmarks_file))
+        torch.save(deca_landmarks, deca_landmarks_file)
+
+        deca_angles = torch.cat(deca_angles)
+        deca_angles_file = osp.join(out_dir, 'deca_angles.pt')
+        if args.verbose:
+            print("  \\__DECA angles : {}".format(deca_angles.shape))
+            print("  \\__Save @ {}".format(deca_angles_file))
+        torch.save(deca_angles, deca_angles_file)
 
 
 if __name__ == '__main__':
