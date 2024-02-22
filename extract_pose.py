@@ -4,19 +4,18 @@ import argparse
 import torch
 from torch.utils import data
 from torchvision import transforms
-from lib import DATASETS, CelebAHQ, DECA_model, calculate_shapemodel
+from lib import CelebAHQ, DECA_model, calculate_shapemodel
 from tqdm import tqdm
 
 
 def main():
-    """TODO: Extract features for the images of a given real dataset in the CLIP [1] and/or OpenCLIP [X] and/or FaRL [2]
-     and/or DINO [3] and/or DINOv2 [Y] ArcFace [4] and/or DECA [5] feature spaces.
+    """Extract pose in terms of 2D facial landmarks and the 3 Euler angles (yaw, pitch, roll) for the images of a given
+    real dataset using DECA [1].
 
     Options:
         -v, --verbose  : set verbose mode on
-        --dataset      : choose dataset (see lib/config.py:DATASETS.keys())
-        --dataset-root : choose dataset root directory (if none is given, lib/config.py:DATASETS[args.dataset] will be
-                         used)
+        --dataset      : choose dataset (required)
+        --dataset-root : choose dataset root directory (required)
         --batch-size   : set batch size
         --cuda         : use CUDA (default)
         --no-cuda      : do not use CUDA
@@ -26,11 +25,11 @@ def main():
             in-the-wild images. ACM Transactions on Graphics (TOG), 2021
 
     """
-    parser = argparse.ArgumentParser(
-        description="Real dataset feature extraction in the CLIP/OpenCLIP/FaRL/DINO/DINOv2/ArcFace/DECA spaces.")
+    parser = argparse.ArgumentParser(description="Real dataset pose extraction using DECA.")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode on")
-    parser.add_argument('--dataset', type=str, required=True, choices=DATASETS.keys(), help="choose real dataset")
-    parser.add_argument('--dataset-root', type=str, help="set dataset root directory")
+    parser.add_argument('--dataset', type=str, required=True, choices=('celebahq', 'lfw'),
+                        help="choose real dataset")
+    parser.add_argument('--dataset-root', type=str, required=True, help="set dataset root directory")
     parser.add_argument('--batch-size', type=int, default=128, help="set batch size")
     parser.add_argument('--cuda', dest='cuda', action='store_true', help="use CUDA during training")
     parser.add_argument('--no-cuda', dest='cuda', action='store_false', help="do NOT use CUDA during training")
@@ -39,6 +38,10 @@ def main():
     # Parse given arguments
     args = parser.parse_args()
 
+    # Check given dataset root directory
+    if not osp.isdir(args.dataset_root):
+        raise NotADirectoryError("Invalid dataset root directory: {}".format(args.dataset_root))
+    
     ####################################################################################################################
     ##                                                                                                                ##
     ##                                                    [ CUDA ]                                                    ##
@@ -87,9 +90,6 @@ def main():
     ####################################################################################################################
     if args.verbose:
         print("#. Load {} dataset...".format(args.dataset))
-
-    if args.dataset_root is None:
-        args.dataset_root = DATASETS[args.dataset]
 
     dataloader = None
     ####################################################################################################################
