@@ -41,7 +41,7 @@ def main():
     # Check given dataset root directory
     if not osp.isdir(args.dataset_root):
         raise NotADirectoryError("Invalid dataset root directory: {}".format(args.dataset_root))
-    
+
     ####################################################################################################################
     ##                                                                                                                ##
     ##                                                    [ CUDA ]                                                    ##

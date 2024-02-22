@@ -7,7 +7,7 @@ import clip
 import open_clip
 from torch.utils import data
 from torchvision import transforms
-from lib import DATASETS, FARL_PRETRAIN_MODEL, CelebAHQ, ArcFace, DECA_model, calculate_shapemodel
+from lib import FARL_PRETRAIN_MODEL, CelebAHQ, ArcFace, DECA_model, calculate_shapemodel
 from tqdm import tqdm
 
 
@@ -51,7 +51,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Real dataset feature extraction in the CLIP/OpenCLIP/FaRL/DINO/DINOv2/ArcFace/DECA spaces.")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode on")
-    parser.add_argument('--dataset', type=str, required=True, choices=DATASETS.keys(), help="choose real dataset")
+    parser.add_argument('--dataset', type=str, required=True, choices=('celebahq', 'lfw'),
+                        help="choose real dataset")
     parser.add_argument('--dataset-root', type=str, help="set dataset root directory")
     parser.add_argument('--batch-size', type=int, default=128, help="set batch size")
     parser.add_argument('--no-clip', action='store_true', help="do NOT extract CLIP features")

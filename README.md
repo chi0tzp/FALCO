@@ -15,6 +15,9 @@ Authors official PyTorch implementation of the *Attribute-preserving **F**ace Da
 </p>
 
 
+For the version that corresponds to the CVPR23 paper, please checkout this [branch](https://github.com/chi0tzp/FALCO/tree/cvpr23) of the repo.
+
+
 ## Installation
 
 We recommend installing the required packages using python's native virtual environment as follows:
@@ -115,68 +118,93 @@ Please see [here](doc/datasets.md) for a brief description of each real dataset 
 
 
 
-
-
 ## Anonymization process
 
-### Step 1: Real images feature extraction: `extract_features.py`
 
-Extract features (in the CLIP [6] and/or
+### Step 0: Real dataset pose extraction: `extract_pose.py`
 
-
-
-
-
- FaRL [4] and/or DINO [7] and/or ArcFace [5] feature spaces) for the images in a given real dataset using the following script:
+TODO: +++
 
 ```bash
-extract_features.py [-h] [-v] --dataset {celeba,celebahq,lfw} [--dataset-root DATASET_ROOT] [--batch-size BATCH_SIZE] [--no-clip] [--no-farl] [--no-dino] [--no-arcface] [--cuda] [--no-cuda]
+usage: extract_pose.py [-h] [-v] --dataset {celebahq,lfw} --dataset-root DATASET_ROOT [--batch-size BATCH_SIZE] [--cuda] [--no-cuda]
 
-Real dataset feature extraction in the CLIP/FaRL/DINO/ArcFace spaces.
+Real dataset pose extraction using DECA.
 
 options:
   -h, --help            show this help message and exit
   -v, --verbose         verbose mode on
-  --dataset {celeba,celebahq,lfw}
+  --dataset {celebahq,lfw}
+                        choose real dataset
+  --dataset-root DATASET_ROOT
+                        set dataset root directory
+  --batch-size BATCH_SIZE
+                        set batch size
+  --cuda                use CUDA during training
+  --no-cuda             do NOT use CUDA during training
+```
+
+TODO: +++
+
+`<dataset_root>/landmarks/` and `<dataset_root>/angles/`
+
+
+
+### Step 1: Real images feature extraction: `extract_features.py`
+
+Extract features (in the CLIP [6] and/or OpenCLIP [XXX] and/or FaRL [4] and/or DINO [7] and/or DINOv2 [7] and/or ArcFace [5] and/or DECA [XXX] feature spaces) for the images in a given real dataset using the following script:
+
+```bash
+usage: extract_features.py [-h] [-v] --dataset {celebahq,lfw} [--dataset-root DATASET_ROOT] [--batch-size BATCH_SIZE] [--no-clip] [--no-openclip] [--no-farl] [--no-dino] [--no-dinov2]
+                           [--no-arcface] [--no-deca] [--cuda] [--no-cuda]
+
+Real dataset feature extraction in the CLIP/OpenCLIP/FaRL/DINO/DINOv2/ArcFace/DECA spaces.
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         verbose mode on
+  --dataset {celebahq,lfw}
                         choose real dataset
   --dataset-root DATASET_ROOT
                         set dataset root directory
   --batch-size BATCH_SIZE
                         set batch size
   --no-clip             do NOT extract CLIP features
+  --no-openclip         do NOT extract OpenCLIP features
   --no-farl             do NOT extract FaRL features
   --no-dino             do NOT extract DINO features
+  --no-dinov2           do NOT extract DINOv2 features
   --no-arcface          do NOT extract ArcFace features
+  --no-deca             do NOT extract DECA features
   --cuda                use CUDA during training
   --no-cuda             do NOT use CUDA during training
 ```
 
-Upon completion, the features will be stored under `datasets/features/<dataset>/` directory. For example,
+Upon completion, the features will be stored under `<dataset_root>/features/` directory. For example,
 
 ```bash
-python extract_features.py -v --dataset=celebahq --batch-size=128
+python extract_features.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --batch-size=128
 ```
 
 will extract all features and store them as follows:
 
 ```bash
-datasets/features/celebahq/
 ├── arcface_features.pt
 ├── clip_features.pt
+├── deca_angles.pt
+├── deca_landmarks.pt
 ├── dino_features.pt
+├── dinov2_features.pt
 ├── farl_features.pt
-└── image_filenames.txt
+├── image_filenames.txt
+└── openclip_features.pt
 ```
 
-
-
-New Step 2: `extract_pose.py`
 
 
 
 ### Step 2: Fake dataset creation: `create_fake_dataset.py`
 
-In order to create a pool of fake images, along with their latent codes in W+/S spaces and feature representations in the CLIP [6] and/or FaRL [4] and/or DINO [7] and/or ArcFace [5] spaces, use the following script: 
+In order to create a pool of fake images, along with their latent codes in W+/S spaces and feature representations in the CLIP [6] and/or OpenCLIP [XXX] and/or FaRL [4] and/or DINO [7] and/or DINOv2 [7] and/or ArcFace [5] and/or DECA [XXX] feature spaces, use the following script: 
 
 ```bash
 create_fake_dataset.py [-h] [-v] [--gan {stylegan2_ffhq1024,stylegan2_ffhq512}] [--truncation TRUNCATION] [--num-samples NUM_SAMPLES] [--no-clip] [--no-farl] [--no-dino] [--no-arcface] [--cuda] [--no-cuda]
@@ -209,22 +237,27 @@ python create_fake_dataset.py -v --num-samples=60000
 will generate 60,000 images/latent codes/features and will store them under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace`. 
 
 
+
 ### Step 3: Nearest neighbor pairing: `pair_nn.py` 
 
 In order to find the nearest fake neighbor of each image in a given real dataset, use the following script:
 
 ```bash
-pair_nn.py [-h] [-v] --real-dataset {celeba,celebahq,lfw} [--fake-dataset-root FAKE_DATASET_ROOT] [--algorithm {auto,ball_tree,kd_tree,brute,all}] [--metric {euclidean,cosine,all}] [--cuda] [--no-cuda]
+usage: pair_nn.py [-h] [-v] --real-dataset REAL_DATASET --real-dataset-root REAL_DATASET_ROOT --fake-dataset-root FAKE_DATASET_ROOT [-K K] [--algorithm {auto,ball_tree,kd_tree,brute,all}]
+                  [--metric {euclidean,cosine,all}] [--cuda] [--no-cuda]
 
 Pair each image of a given real dataset with an image of a given fake dataset
 
 options:
   -h, --help            show this help message and exit
   -v, --verbose         verbose mode on
-  --real-dataset {celeba,celebahq,lfw}
+  --real-dataset REAL_DATASET
                         real dataset
+  --real-dataset-root REAL_DATASET_ROOT
+                        set real dataset root directory
   --fake-dataset-root FAKE_DATASET_ROOT
-                        set the fake dataset's root directory (as generated by `create_fake_dataset.py` under datasets/)
+                        set the fake dataset\'s root directory (as generated by `create_fake_dataset.py` under datasets/)
+  -K K                  set number K of NNs
   --algorithm {auto,ball_tree,kd_tree,brute,all}
                         set algorithm used to compute the nearest neighbors
   --metric {euclidean,cosine,all}
@@ -418,8 +451,6 @@ python visualize_dataset.py -v --dataset=celebahq --fake-nn-map=datasets/fake/fa
 
 
 
-
-
 ## References
 
 [1] https://genforce.github.io/
@@ -435,6 +466,14 @@ python visualize_dataset.py -v --dataset=celebahq --fake-nn-map=datasets/fake/fa
 [6] Radford, A., Kim, J. W., Hallacy, C.,  Ramesh, A., Goh, G., Agarwal, S., ... & Sutskever, I. (2021, July).  Learning transferable visual models from natural language supervision.  In *International conference on machine learning* (pp. 8748-8763). PMLR.
 
 [7] Caron, M., Touvron, H., Misra, I.,  Jégou, H., Mairal, J., Bojanowski, P., & Joulin, A. (2021). Emerging properties in self-supervised vision transformers. In *Proceedings of the IEEE/CVF international conference on computer vision* (pp. 9650-9660).
+
+[8-OpenCLIP] OpenCLIP
+
+[9-DINOv2] DINOv2
+
+[10-DECA] Yao Feng, Haiwen Feng, Michael J Black, and Timo Bolkart. Learning an animatable detailed 3d face model from in-the-wild images. ACM Transactions on Graphics (TOG), 2021
+
+
 
 
 

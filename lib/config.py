@@ -4,16 +4,7 @@
 ##                                                                                                                    ##
 ########################################################################################################################
 
-########################################################################################################################
-##                                                                                                                    ##
-##                                                    [ Datasets ]                                                    ##
-##                                                                                                                    ##
-########################################################################################################################
-DATASETS = {
-    'celebahq': 'datasets/CelebA-HQ/',
-    'lfw': 'datasets/LFW/',
-}
-
+# CelebA attribute classes
 CelebA_classes = ('5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald', 'Bangs', 'Big_Lips',
                   'Big_Nose', 'Black_Hair', 'Blond_Hair', 'Blurry', 'Brown_Hair', 'Bushy_Eyebrows', 'Chubby',
                   'Double_Chin', 'Eyeglasses', 'Goatee', 'Gray_Hair', 'Heavy_Makeup', 'High_Cheekbones', 'Male',

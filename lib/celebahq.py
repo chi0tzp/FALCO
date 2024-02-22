@@ -125,11 +125,16 @@ class CelebAHQ(data.Dataset):
                 self.nn_type = osp.basename(fake_nn_map).split('.')[0]
                 with open(self.fake_nn_map) as f:
                     self.nn_map_dict = json.load(f)
+
+                # self.nn_landmarks_available = True
+                # self.nn_angles_available = True
+
                 self.nn_landmarks_available = all(
-                    [osp.exists(osp.join(self.fake_dataset_root, f, 'landmarks.pt')) for f in
+                    [osp.exists(osp.join(self.fake_dataset_root, f[0], 'deca_landmarks.pt')) for f in
                      self.nn_map_dict.values()])
                 self.nn_angles_available = all(
-                    [osp.exists(osp.join(self.fake_dataset_root, f, 'angles.pt')) for f in self.nn_map_dict.values()])
+                    [osp.exists(osp.join(self.fake_dataset_root, f[0], 'deca_angles.pt')) for f in
+                     self.nn_map_dict.values()])
 
         ################################################################################################################
         ##                                                                                                            ##
@@ -216,8 +221,8 @@ class CelebAHQ(data.Dataset):
         img_nn_code = torch.zeros((18, 512))
         if self.fake_nn_map is not None:
             img_nn = self.transform(
-                Image.open(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename], 'image.jpg')))
-            img_nn_code = torch.load(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename],
+                Image.open(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename][0], 'image.jpg')))
+            img_nn_code = torch.load(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename][0],
                                               'latent_code_w+.pt')).squeeze(0)
 
         img_nn_landmarks = torch.zeros(2, 68)

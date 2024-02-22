@@ -1,4 +1,3 @@
-import sys
 import os
 import os.path as osp
 import argparse
@@ -18,11 +17,12 @@ def main():
     """
     A script for generating a fake image dataset by sampling from a pre-trained StyleGAN2 generator. The generated
     images, along with the corresponding W+ latent codes and their representations in the CLIP [1] and/or OpenCLIP [X]
-    and/or FaRL [2] and/or DINO [3] and/or DINOv2 [Y] ArcFace [4] and/or DECA [5] spaces will be stored under TODO
+    and/or FaRL [2] and/or DINO [3] and/or DINOv2 [Y] ArcFace [4] and/or DECA [5] spaces will be stored under
+    `<dataset_root>/fake/`.
 
     Options:
         -v, --verbose  : set verbose mode on
-        --dataset-root : (read) dataset root directory
+        --dataset-root : set (real) dataset root directory
         --gan          : set GAN generator (see GENFORCE_MODELS in lib/config.py)
         --truncation   : set W-space truncation parameter (default: 0.7)
         --num-samples  : set the number of latent codes to sample for generating images (default: 60000)
@@ -59,14 +59,14 @@ def main():
     parser.add_argument('--gan', type=str, default='stylegan2_ffhq1024', choices=GENFORCE_MODELS.keys(),
                         help='pre-trained GAN generator')
     parser.add_argument('--truncation', type=float, default=0.7, help="W-space truncation parameter")
-    parser.add_argument('--num-samples', type=int, default=100, help="number of latent codes to sample")
+    parser.add_argument('--num-samples', type=int, default=60000, help="number of generated sample")
     parser.add_argument('--no-clip', action='store_true', help="do NOT extract CLIP features")
     parser.add_argument('--no-openclip', action='store_true', help="do NOT extract OpenCLIP features")
     parser.add_argument('--no-farl', action='store_true', help="do NOT extract FaRL features")
     parser.add_argument('--no-dino', action='store_true', help="do NOT extract DINO features")
     parser.add_argument('--no-dinov2', action='store_true', help="do NOT extract DINOv2 features")
-    parser.add_argument('--no-deca', action='store_true', help="do NOT extract DECA features")
     parser.add_argument('--no-arcface', action='store_true', help="do NOT extract ArcFace features")
+    parser.add_argument('--no-deca', action='store_true', help="do NOT extract DECA features")
     parser.add_argument('--cuda', dest='cuda', action='store_true', help="use CUDA during training")
     parser.add_argument('--no-cuda', dest='cuda', action='store_false', help="do NOT use CUDA during training")
     parser.set_defaults(cuda=True)
@@ -171,8 +171,6 @@ def main():
                                                                       (0.26862954, 0.26130258, 0.27577711))])
 
     # === OpenCLIP ===
-    openclip_model = None
-    openclip_img_transform = None
     openclip_features_file = osp.join(out_dir, 'openclip_features.pt')
     if osp.exists(openclip_features_file):
         args.no_openclip = True
@@ -183,8 +181,6 @@ def main():
         openclip_model, _, _ = open_clip.create_model_and_transforms(model_name='ViT-B-32',
                                                                      pretrained='laion2b_s34b_b79k')
         openclip_model.eval().to(device)
-        # TODO: is this needed?
-        # openclip_model.float()
         openclip_img_transform = transforms.Compose([transforms.Resize(224, antialias=True),
                                                      transforms.CenterCrop(224),
                                                      transforms.Normalize((0.48145466, 0.4578275, 0.40821073),
@@ -232,8 +228,6 @@ def main():
                                                  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
 
     # === DINOv2 ===
-    dinov2_model = None
-    dinov2_img_transform = None
     dinov2_features_file = osp.join(out_dir, 'dinov2_features.pt')
     if osp.exists(dinov2_features_file):
         args.no_dinov2 = True
@@ -264,16 +258,17 @@ def main():
                                                     transforms.CenterCrop(256)])
 
     # === DECA ===
-    deca_features_file = osp.join(out_dir, 'deca_features.pt')
-    if osp.exists(deca_features_file):
-        args.no_deca = True
+    if not args.no_deca:
+        deca_features_file = osp.join(out_dir, 'deca_features.pt')
+        if osp.exists(deca_features_file):
+            args.no_deca = True
 
-    if args.verbose:
-        print("#. Build pre-trained DECA model...")
+        if args.verbose:
+            print("#. Build pre-trained DECA model...")
 
-    deca_model = DECA_model(device=device)
-    deca_img_transform = transforms.Compose([transforms.Resize((256, 256)),
-                                             transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+        deca_model = DECA_model(device=device)
+        deca_img_transform = transforms.Compose([transforms.Resize((256, 256)),
+                                                 transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 
     ####################################################################################################################
     ##                                                                                                                ##

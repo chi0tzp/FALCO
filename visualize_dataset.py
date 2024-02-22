@@ -7,7 +7,7 @@ from torchvision import transforms
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from lib import DATASETS, CelebAHQ
+from lib import CelebAHQ
 
 
 def draw_landmarks():
@@ -287,9 +287,8 @@ def main():
 
     Options:
         -v, --verbose       : set verbose mode on
-        --dataset           : choose dataset (see lib/config.py:DATASETS.keys())
-        --dataset-root      : set dataset's root directory (if none is given, lib/config.py:DATASETS[args.dataset] will
-                              be used)
+        --dataset           : choose dataset (required)
+        --dataset-root      : set dataset's root directory (required)
         --subset            : choose dataset subset ('train', 'val', 'test', 'train+val', 'train+val+test'), if
                               applicable
         --fake-nn-map       : visualize the corresponding fake NN for each original (real) image using the given NN map
@@ -310,9 +309,9 @@ def main():
     """
     parser = argparse.ArgumentParser(description="Dataset visualization")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode on")
-    parser.add_argument('--dataset', type=str, required=True, choices=DATASETS.keys(),
-                        help="dataset (see lib/config.py:DATASETS.keys())")
-    parser.add_argument('--dataset-root', type=str, help="set dataset root directory")
+    parser.add_argument('--dataset', type=str, required=True, choices=('celebahq', 'lfw'),
+                        help="choose dataset")
+    parser.add_argument('--dataset-root', type=str, required=True, help="set dataset root directory")
     parser.add_argument('--subset', type=str, default='train+val+test',
                         choices=('train', 'val', 'test', 'train+val', 'train+val+test'), help="choose dataset's subset")
     parser.add_argument('--fake-nn-map', type=str,
@@ -327,8 +326,9 @@ def main():
     # Parse given arguments
     args = parser.parse_args()
 
-    if args.dataset_root is None:
-        args.dataset_root = DATASETS[args.dataset]
+    # Check given dataset root directory
+    if not osp.isdir(args.dataset_root):
+        raise NotADirectoryError("Invalid dataset root directory: {}".format(args.dataset_root))
 
     ####################################################################################################################
     ##                                                                                                                ##
@@ -339,15 +339,9 @@ def main():
     dataloader = None
 
     ####################################################################################################################
-    ##                                                   [ CelebA ]                                                   ##
-    ####################################################################################################################
-    if args.dataset == 'celeba':
-        raise NotImplementedError
-
-    ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
     ####################################################################################################################
-    elif args.dataset == 'celebahq':
+    if args.dataset == 'celebahq':
         dataset = CelebAHQ(root_dir=args.dataset_root,
                            subset=args.subset,
                            fake_nn_map=args.fake_nn_map,
