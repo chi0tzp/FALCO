@@ -41,7 +41,7 @@ For using the aforementioned virtual environment in a Jupyter Notebook, you need
 python -m ipykernel install --user --name=falco-venv
 ```
 
-
+If you use Python 3.11 and 
 
 ```
 DEBUGGING: Replace getargspec call for Python 3.11 
@@ -121,7 +121,13 @@ Please see [here](doc/datasets.md) for a brief description of each real dataset 
 
 ### Step 1: Real images feature extraction: `extract_features.py`
 
-Extract features (in the CLIP [6] and/or FaRL [4] and/or DINO [7] and/or ArcFace [5] feature spaces) for the images in a given real dataset using the following script:
+Extract features (in the CLIP [6] and/or
+
+
+
+
+
+ FaRL [4] and/or DINO [7] and/or ArcFace [5] feature spaces) for the images in a given real dataset using the following script:
 
 ```bash
 extract_features.py [-h] [-v] --dataset {celeba,celebahq,lfw} [--dataset-root DATASET_ROOT] [--batch-size BATCH_SIZE] [--no-clip] [--no-farl] [--no-dino] [--no-arcface] [--cuda] [--no-cuda]
@@ -409,6 +415,8 @@ python visualize_dataset.py -v --dataset=celebahq --fake-nn-map=datasets/fake/fa
   year={2023}
 }
 ```
+
+
 
 
 

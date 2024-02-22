@@ -1,3 +1,4 @@
+import sys
 import os
 import os.path as osp
 import argparse
@@ -239,8 +240,9 @@ def main():
     # === DECA ===
     deca_model = None
     deca_img_transform = None
-    deca_features_file = osp.join(out_dir, 'deca_features.pt')
-    if osp.exists(deca_features_file):
+    deca_landmarks_file = osp.join(out_dir, 'deca_landmarks.pt')
+    deca_angles_file = osp.join(out_dir, 'deca_angles.pt')
+    if osp.exists(deca_landmarks_file) and osp.exists(deca_angles_file):
         args.no_deca = True
 
     if not args.no_deca:
@@ -294,7 +296,8 @@ def main():
     dino_features = []
     dinov2_features = []
     arcface_features = []
-    deca_features = []
+    deca_landmarks = []
+    deca_angles = []
     for i_batch, data_batch in enumerate(
             tqdm(dataloader, desc="#. Process {} images".format(args.dataset) if args.verbose else '')):
 
@@ -344,8 +347,8 @@ def main():
             with torch.no_grad():
                 landmarks2d, angles = calculate_shapemodel(deca_model=deca_model,
                                                            images=deca_img_transform(data_batch[0]).to(device))
-            img_feat = torch.cat([landmarks2d.reshape(landmarks2d.shape[0], -1), angles], dim=1)
-            deca_features.append(img_feat.cpu())
+            deca_landmarks.append(landmarks2d.reshape(landmarks2d.shape[0], -1).cpu())
+            deca_angles.append(angles.cpu())
 
     # Save dataset images' filenames
     img_filenames_file = osp.join(out_dir, 'image_filenames.txt')
@@ -407,13 +410,19 @@ def main():
             print("  \\__Save @ {}".format(arcface_features_file))
         torch.save(arcface_features, arcface_features_file)
 
-    # Save DECA features
+    # Save DECA landmarks and angles
     if not args.no_deca:
-        deca_features = torch.cat(deca_features)
+        deca_landmarks = torch.cat(deca_landmarks)
         if args.verbose:
-            print("  \\__DECA features : {}".format(deca_features.shape))
-            print("  \\__Save @ {}".format(deca_features_file))
-        torch.save(deca_features, deca_features_file)
+            print("  \\__DECA landmarks : {}".format(deca_landmarks.shape))
+            print("  \\__Save @ {}".format(deca_landmarks_file))
+        torch.save(deca_landmarks, deca_landmarks_file)
+
+        deca_angles = torch.cat(deca_angles)
+        if args.verbose:
+            print("  \\__DECA angles : {}".format(deca_angles.shape))
+            print("  \\__Save @ {}".format(deca_angles_file))
+        torch.save(deca_angles, deca_angles_file)
 
 
 if __name__ == '__main__':
