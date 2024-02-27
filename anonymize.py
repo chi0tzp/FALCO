@@ -1,14 +1,16 @@
+import sys
 import argparse
 import torch
 from torch.utils import data
 from torch.optim.lr_scheduler import MultiStepLR
 import os
 import os.path as osp
-from lib import DATASETS, CelebAHQ, DataParallelPassthrough, IDLoss, AttrLoss, LatentCode, tensor2image, anon_exp_dir
+from lib import CelebAHQ, DataParallelPassthrough, IDLoss, AttrLoss, LatentCode, tensor2image, anon_exp_dir
 from models.load_generator import load_generator
 from tqdm import tqdm
 import json
 
+# python anonymize.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --fake-nn-map=datasets/CelebA-HQ/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
 
 def main():
     """Anonymize the images of a given real dataset.
@@ -40,13 +42,14 @@ def main():
     """
     parser = argparse.ArgumentParser("Anonymization script")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode on")
-    parser.add_argument('--dataset', type=str, required=True, choices=DATASETS.keys(), help="choose real dataset")
-    parser.add_argument('--dataset-root', type=str, help="set dataset root directory")
+    parser.add_argument('--dataset', type=str, required=True, choices=('celebahq', 'lfw'),
+                        help="choose real dataset")
+    parser.add_argument('--dataset-root', type=str, required=True, help="set dataset root directory")
     parser.add_argument('--subset', type=str, default='train+val+test',
                         choices=('train', 'val', 'test', 'train+val', 'train+val+test'), help="choose dataset's subset")
     parser.add_argument('--fake-nn-map', type=str, required=True, help="fake NN map file (created by `pair_nn.py`)")
     parser.add_argument('--latent-space', type=str, default='W+', choices=('W+', 'S'), help="StyleGAN2's latent space")
-    parser.add_argument('-m', '--id-margin', type=float, default=0.0, help="identity loss margin")
+    parser.add_argument('-m', '--id-margin', type=float, default=0.5, help="identity loss margin")
     parser.add_argument('--epochs', type=int, default=50, help="Number of anonymization steps")
     parser.add_argument('--optim', type=str, default='adam', choices=('sgd', 'adam'),
                         help="set optimizer ('sgd' or 'adam')")
@@ -62,10 +65,6 @@ def main():
     # Parse given arguments
     args = parser.parse_args()
 
-    # Set real dataset root dir
-    if args.dataset_root is None:
-        args.dataset_root = DATASETS[args.dataset]
-
     ####################################################################################################################
     ##                                                                                                                ##
     ##                                      [ Anonymized Dataset Directory  ]                                         ##
@@ -74,7 +73,7 @@ def main():
     args_dict = args.__dict__.copy()
     out_dir = anon_exp_dir(args_dict)
     if args.verbose:
-        print("#. Create dir for storing the anonymized {} dataset...".format(args.dataset))
+        print("#. Create dir for storing the anonymized dataset...")
         print("  \\__{}".format(out_dir))
 
     # Save experiment's arguments
@@ -117,7 +116,7 @@ def main():
     ##                                                                                                                ##
     ####################################################################################################################
     if args.verbose:
-        print("#. Load {} dataset...".format(args.dataset))
+        print("#. Load dataset...")
 
     dataloader = None
     out_data_dir = None
@@ -170,13 +169,13 @@ def main():
     ##                                                                                                                ##
     ####################################################################################################################
     for data_idx, data_ in enumerate(
-            tqdm(dataloader, desc="#. Invert {} images".format(args.dataset) if args.verbose else '')):
+            tqdm(dataloader, desc="#. Anonymize {} images".format(args.dataset) if args.verbose else '')):
 
         # Get data
         img_orig = data_[0]
         img_orig_id = int(osp.basename(data_[2][0]).split('.')[0])
-        img_nn_code = data_[4]
-        img_recon_code = data_[6]
+        img_nn_code = data_[6]
+        img_recon_code = data_[10]
 
         # Build anonymization latent code
         latent_code = LatentCode(latent_code_real=img_recon_code, latent_code_fake_nn=img_nn_code, img_id=img_orig_id,

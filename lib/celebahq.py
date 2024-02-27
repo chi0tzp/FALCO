@@ -125,10 +125,6 @@ class CelebAHQ(data.Dataset):
                 self.nn_type = osp.basename(fake_nn_map).split('.')[0]
                 with open(self.fake_nn_map) as f:
                     self.nn_map_dict = json.load(f)
-
-                # self.nn_landmarks_available = True
-                # self.nn_angles_available = True
-
                 self.nn_landmarks_available = all(
                     [osp.exists(osp.join(self.fake_dataset_root, f[0], 'deca_landmarks.pt')) for f in
                      self.nn_map_dict.values()])

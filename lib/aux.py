@@ -6,7 +6,7 @@ from torchvision.transforms import ToPILImage
 
 
 def anon_exp_dir(args_dict, makedir=True):
-    dir_name = osp.join('datasets', 'anon', args_dict['dataset'],
+    dir_name = osp.join(args_dict['dataset_root'], 'anon',
                         '{}-{}_anon_{}_m-{}_lambda-id-{}_lambda-attr-{}_{}-{}_epochs-{}_{}'.format(
                             args_dict['dataset'], args_dict['subset'],
                             args_dict['latent_space'],
