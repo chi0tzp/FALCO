@@ -7,7 +7,7 @@ from torchvision import transforms
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from lib import CelebAHQ
+from lib import CelebAHQ, LFW
 
 
 def draw_landmarks():
@@ -314,6 +314,7 @@ def main():
     parser.add_argument('--dataset-root', type=str, required=True, help="set dataset root directory")
     parser.add_argument('--subset', type=str, default='train+val+test',
                         choices=('train', 'val', 'test', 'train+val', 'train+val+test'), help="choose dataset's subset")
+    parser.add_argument('--lfw-anno', type=str, help="TODO")
     parser.add_argument('--fake-nn-map', type=str,
                         help="visualize NNs using the given NN map file (created by `pair_nn.py`)")
     parser.add_argument('--inv', action='store_true', help="visualize e4e inversions (created by `invert.py`)")
@@ -353,7 +354,13 @@ def main():
     ##                                                    [ LFW ]                                                     ##
     ####################################################################################################################
     elif args.dataset == 'lfw':
-        raise NotImplementedError
+        dataset = LFW(root_dir=args.dataset_root,
+                      subset=args.subset,
+                      annotation_file=args.lfw_anno,
+                      fake_nn_map=args.fake_nn_map,
+                      inv=args.inv,
+                      anon=args.anon)
+        dataloader = data.DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=args.shuffle)
 
     ####################################################################################################################
     ##                                                                                                                ##

@@ -7,7 +7,7 @@ import clip
 import open_clip
 from torch.utils import data
 from torchvision import transforms
-from lib import FARL_PRETRAIN_MODEL, CelebAHQ, ArcFace, DECA_model, calculate_shapemodel
+from lib import CelebAHQ, LFW, FARL_PRETRAIN_MODEL, ArcFace, DECA_model, calculate_shapemodel
 from tqdm import tqdm
 
 
@@ -267,9 +267,6 @@ def main():
     if args.verbose:
         print("#. Load {} dataset...".format(args.dataset))
 
-    if args.dataset_root is None:
-        args.dataset_root = DATASETS[args.dataset]
-
     dataloader = None
     ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
@@ -282,7 +279,8 @@ def main():
     ##                                                    [ LFW ]                                                     ##
     ####################################################################################################################
     elif args.dataset == 'lfw':
-        raise NotImplementedError
+        dataset = LFW(root_dir=args.dataset_root, subset='train+val+test')
+        dataloader = data.DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=False)
 
     ####################################################################################################################
     ##                                                                                                                ##

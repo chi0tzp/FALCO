@@ -3,6 +3,7 @@ from .config import GENFORCE, GENFORCE_MODELS, STYLEGAN_LAYERS, STYLEGAN2_STYLE_
     STYLEGAN2_STYLE_SPACE_TARGET_LAYERS, SFD, DECA, FARL, FARL_PRETRAIN_MODEL, ARCFACE, GAZE, E4E
 from .aligner import FaceAligner
 from .celebahq import CelebAHQ
+from .lfw import LFW
 from .collate_fn import collate_fn
 from .arcface import ArcFace
 from .latent_code import LatentCode

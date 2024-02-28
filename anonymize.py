@@ -12,6 +12,7 @@ import json
 
 # python anonymize.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --fake-nn-map=datasets/CelebA-HQ/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
 
+
 def main():
     """Anonymize the images of a given real dataset.
 
