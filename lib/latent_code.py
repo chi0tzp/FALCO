@@ -12,7 +12,7 @@ class LatentCode(nn.Module):
         Args:
             latent_code_real (torch.Tensor)    : real (inverted by e4e) image's latent code
             latent_code_fake_nn (torch.Tensor) : fake (NN) image's latent code
-            img_id (int)                       : image id (corresponding to the given latent code)
+            img_id (str)                       : image id (corresponding to the given latent code)
             out_code_dir (str)                 : Latent code's output directory
             gan (str)                          : StyleGAN2 type ('stylegan2_ffhq1024' or 'stylegan2_ffhq512')
             latent_space (str)                 : StyleGAN2's latent space (W+ or S)

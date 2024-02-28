@@ -5,12 +5,14 @@ from torch.utils import data
 from torch.optim.lr_scheduler import MultiStepLR
 import os
 import os.path as osp
-from lib import CelebAHQ, DataParallelPassthrough, IDLoss, AttrLoss, LatentCode, tensor2image, anon_exp_dir
+from lib import CelebAHQ, LFW, DataParallelPassthrough, IDLoss, AttrLoss, LatentCode, tensor2image, anon_exp_dir
 from models.load_generator import load_generator
 from tqdm import tqdm
 import json
 
 # python anonymize.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --fake-nn-map=datasets/CelebA-HQ/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
+# python anonymize.py -v --dataset=celebahq --dataset-root=datasets/LFW/ --fake-nn-map=datasets/LFW/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
+
 
 
 def main():
@@ -123,34 +125,32 @@ def main():
     out_data_dir = None
     out_code_dir = None
     ####################################################################################################################
-    ##                                                   [ CelebA ]                                                   ##
-    ####################################################################################################################
-    if args.dataset == 'celeba':
-        raise NotImplementedError
-
-    ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
     ####################################################################################################################
-    elif args.dataset == 'celebahq':
+    if args.dataset == 'celebahq':
         dataset = CelebAHQ(root_dir=args.dataset_root,
                            subset=args.subset,
                            fake_nn_map=args.fake_nn_map,
                            inv=True)
         dataloader = data.DataLoader(dataset=dataset, batch_size=1, shuffle=False)
 
-        # Create output directory to save images
-        out_data_dir = osp.join(out_dir, 'data')
-        os.makedirs(out_data_dir, exist_ok=True)
-
-        # Create output directory to save latent codes
-        out_code_dir = osp.join(out_dir, 'latent_codes')
-        os.makedirs(out_code_dir, exist_ok=True)
-
     ####################################################################################################################
     ##                                                    [ LFW ]                                                     ##
     ####################################################################################################################
     elif args.dataset == 'lfw':
-        raise NotImplementedError
+        dataset = LFW(root_dir=args.dataset_root,
+                      subset=args.subset,
+                      fake_nn_map=args.fake_nn_map,
+                      inv=False)
+        dataloader = data.DataLoader(dataset=dataset, batch_size=1, shuffle=False)
+
+    # Create output directory to save images
+    out_data_dir = osp.join(out_dir, 'data')
+    os.makedirs(out_data_dir, exist_ok=True)
+
+    # Create output directory to save latent codes
+    out_code_dir = osp.join(out_dir, 'latent_codes')
+    os.makedirs(out_code_dir, exist_ok=True)
 
     ####################################################################################################################
     ##                                                                                                                ##
@@ -174,15 +174,20 @@ def main():
 
         # Get data
         img_orig = data_[0]
-        img_orig_id = int(osp.basename(data_[2][0]).split('.')[0])
+        # img_orig_id = int(osp.basename(data_[2][0]).split('.')[0])
+        # REVIEW: LFW
+        img_orig_id = osp.basename(data_[2][0]).split('.')[0]
         img_nn_code = data_[6]
         img_recon_code = data_[10]
 
         # Build anonymization latent code
-        latent_code = LatentCode(latent_code_real=img_recon_code, latent_code_fake_nn=img_nn_code, img_id=img_orig_id,
+        # latent_code = LatentCode(latent_code_real=img_recon_code, latent_code_fake_nn=img_nn_code, img_id=img_orig_id,
+        #                          out_code_dir=out_code_dir, latent_space='W+')
+        # REVIEW: LFW
+        latent_code = LatentCode(latent_code_real=img_nn_code, latent_code_fake_nn=img_nn_code, img_id=img_orig_id,
                                  out_code_dir=out_code_dir, latent_space='W+')
         latent_code.to(device)
-
+        
         # Count trainable parameters
         # latent_code_trainable_parameters = sum(p.numel() for p in latent_code.parameters() if p.requires_grad)
         # print("latent_code_trainable_parameters: {}".format(latent_code_trainable_parameters))

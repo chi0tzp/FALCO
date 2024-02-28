@@ -222,8 +222,8 @@ class LFW(data.Dataset):
         img_nn_code = torch.zeros((18, 512))
         if self.fake_nn_map is not None:
             img_nn = self.transform(
-                Image.open(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename], 'image.jpg')))
-            img_nn_code = torch.load(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename],
+                Image.open(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename][0], 'image.jpg')))
+            img_nn_code = torch.load(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename][0],
                                               'latent_code_w+.pt')).squeeze(0)
 
         img_nn_landmarks = torch.zeros(2, 68)
