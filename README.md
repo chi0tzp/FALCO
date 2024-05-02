@@ -29,6 +29,7 @@ source falco-venv/bin/activate
 
 # Upgrade pip and install requirements
 pip install --upgrade pip
+pip install setuptools
 pip install -r requirements.txt
 
 # Install CLIP (for obtaining the CLIP and FaRL ViT features)
