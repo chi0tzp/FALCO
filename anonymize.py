@@ -11,7 +11,7 @@ from tqdm import tqdm
 import json
 
 # python anonymize.py -v --dataset=celebahq --dataset-root=datasets/CelebA-HQ/ --fake-nn-map=datasets/CelebA-HQ/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
-# python anonymize.py -v --dataset=celebahq --dataset-root=datasets/LFW/ --fake-nn-map=datasets/LFW/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
+# python anonymize.py -v --dataset=lfw --dataset-root=datasets/LFW/ --fake-nn-map=datasets/LFW/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-OpenCLIP-FaRL-DINO-DINOv2-ArcFace-DECA/nn_map_farl_brute_cosine.json --epochs=5
 
 
 
@@ -187,7 +187,7 @@ def main():
         latent_code = LatentCode(latent_code_real=img_nn_code, latent_code_fake_nn=img_nn_code, img_id=img_orig_id,
                                  out_code_dir=out_code_dir, latent_space='W+')
         latent_code.to(device)
-        
+
         # Count trainable parameters
         # latent_code_trainable_parameters = sum(p.numel() for p in latent_code.parameters() if p.requires_grad)
         # print("latent_code_trainable_parameters: {}".format(latent_code_trainable_parameters))
