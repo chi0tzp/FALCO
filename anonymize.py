@@ -170,7 +170,7 @@ def main():
     ##                                                                                                                ##
     ####################################################################################################################
     for data_idx, data_ in enumerate(
-            tqdm(dataloader, desc="#. Invert {} images".format(args.dataset) if args.verbose else '')):
+            tqdm(dataloader, desc="#. Anonymize {} images".format(args.dataset) if args.verbose else '')):
 
         # Get data
         img_orig = data_[0]

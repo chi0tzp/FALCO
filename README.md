@@ -79,8 +79,6 @@ Please see [here](doc/datasets.md) for a brief description of each real dataset 
 
 
 
-
-
 ## Anonymization process
 
 ### Step 1: Real images feature extraction: `extract_features.py`
@@ -161,6 +159,7 @@ python create_fake_dataset.py -v --num-samples=60000
 ```
 
 will generate 60,000 images/latent codes/features and will store them under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace`. 
+
 
 
 ### Step 3: Nearest neighbor pairing: `pair_nn.py` 
@@ -292,7 +291,7 @@ python visualize_dataset.py -v --dataset=celebahq --fake-nn-map=datasets/fake/fa
 <img src="figs/vis_orig_recon_nn.jpg" style="width: 25vw"/>
 </p>
 
-### Step 5: Anonymization training script: `anon_train.py` 
+### Step 5: Anonymization training script: `anonymize.py` 
 
 In order to anonymize the images of a given real dataset, use the following script:
 
