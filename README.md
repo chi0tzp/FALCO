@@ -21,7 +21,7 @@ We recommend installing the required packages using Python's native virtual envi
 
 ```bash
 # Create a virtual environment and activate it
-virtualenv --python 3.11 falco-venv
+python -m venv falco-venv
 source falco-venv/bin/activate
 
 # Upgrade pip and install requirements
@@ -35,8 +35,6 @@ pip install --pre torch torchvision torchaudio --index-url https://download.pyto
 # Install CLIP (for obtaining the CLIP and FaRL ViT features)
 pip install git+https://github.com/openai/CLIP.git
 ```
-
-
 
 For using the aforementioned virtual environment in a Jupyter Notebook, you need to manually add the kernel as follows:
 
