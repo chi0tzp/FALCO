@@ -3,7 +3,8 @@ torchvision
 ipython
 ipykernel
 ipywidgets
-numpy
+# numpy
+numpy==1.23.1
 scikit-learn
 scikit-image
 Pillow
