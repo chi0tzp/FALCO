@@ -20,11 +20,13 @@ For the version that corresponds to the CVPR23 paper, please checkout this [bran
 
 ## Installation
 
-We recommend installing the required packages using python's native virtual environment as follows:
+We recommend installing the required packages using virtualenv and Python 3.10 (due to ... pytorch3d) as follows:
 
 ```bash
+#(You need to have Python 3.10 installed)
+
 # Create a virtual environment and activate it
-python -m venv falco-venv
+virtualenv --python 3.10 falco-venv
 source falco-venv/bin/activate
 
 # Upgrade pip and install requirements
@@ -35,7 +37,10 @@ pip install -r requirements.txt
 # Install CLIP (for obtaining the CLIP and FaRL ViT features)
 pip install git+https://github.com/openai/CLIP.git
 
-# Install PyTorch3D
+# Install xformers
+pip install -U --pre xformers
+
+# Install pytorch3d
 pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 ```
 
@@ -43,23 +48,6 @@ For using the aforementioned virtual environment in a Jupyter Notebook, you need
 
 ```bash
 python -m ipykernel install --user --name=falco-venv
-```
-
-If you use Python 3.11 and 
-
-```
-DEBUGGING: Replace getargspec call for Python 3.11 
-==================================================
-File "***/FALCO/falco-venv/lib/python3.11/site-packages/chumpy/ch.py", line 1203, in _depends_on
-    want_out = 'out' in inspect.getargspec(func).args
-                        ^^^^^^^^^^^^^^^^^^
-AttributeError: module 'inspect' has no attribute 'getargspec'. Did you mean: 'getargs'?
-
-
-want_out = 'out' in inspect.getargspec(func).args
-vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-want_out = 'out' in inspect.getfullargspec(func).args
-
 ```
 
 

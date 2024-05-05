@@ -1,9 +1,9 @@
-torch
+torch # 2.3
 torchvision
 ipython
 ipykernel
 ipywidgets
-numpy==1.23.1  # python -m pip install numpy==1.23.1
+numpy
 scikit-learn
 scikit-image
 Pillow
@@ -11,16 +11,16 @@ matplotlib
 tqdm
 opencv-python-headless
 urllib3
-# urllib3==1.26.6
 requests
 scipy
 ninja
-# ===
 kornia
 open-clip-torch
-facenet-pytorch
-face-alignment
-xformers
-# pip install "git+https://github.com/facebookresearch/pytorch3d.git"
 yacs
 chumpy
+face-alignment
+facenet-pytorch
+# ===
+# xformers  --> pip install -U --pre xformers
+# pytorch3d --> pip install "git+https://github.com/facebookresearch/pytorch3d.git"
+# ===
