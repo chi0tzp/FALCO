@@ -55,7 +55,7 @@ def main():
     """
     parser = argparse.ArgumentParser(description="Create a fake image dataset using a pre-trained GAN generator.")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode on")
-    parser.add_argument('--dataset-root', type=str, help="set dataset root directory")
+    parser.add_argument('--dataset-root', type=str, required=True, help="set dataset root directory")
     parser.add_argument('--gan', type=str, default='stylegan2_ffhq1024', choices=GENFORCE_MODELS.keys(),
                         help='pre-trained GAN generator')
     parser.add_argument('--truncation', type=float, default=0.7, help="W-space truncation parameter")
