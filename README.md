@@ -220,7 +220,7 @@ options:
 The generated images along with the corresponding latent codes and features will be stored under `datasets/fake/`. For example, 
 
 ```bash
-python create_fake_dataset.py -v --num-samples=60000
+python create_fake_dataset.py -v --dataset-root=datasets/CelebA-HQ/ --num-samples=60000
 ```
 
 will generate 60,000 images/latent codes/features and will store them under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace`. 
@@ -260,7 +260,7 @@ Upon completion, NN map files (i.e., dictionaries that map each real image to a 
 For example, in order to assign to each image in the CelebA-HQ dataset to a fake NN from the fake dataset created in the example above (i.e., `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace/`), for all available feature representations (i.e., CLIP [6], FaRL [4], DINO [7], and ArcFace [5]) and using the `auto` NN algorithm and the `euclidean`/`cosine` metrics, run:
 
 ```bash
-python pair_nn.py -v --real-dataset=celebahq --fake-dataset-root=datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace/ --algorithm=auto
+python pair_nn.py -v --real-dataset=celebahq --fake-dataset-root=datasets/CelebA-HQ/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace/ --algorithm=auto
 ```
 
 Upon completion the following files will be stored under `datasets/fake/fake_dataset_stylegan2_ffhq1024-0.7-60000-CLIP-FaRL-DINO-ArcFace/`:
