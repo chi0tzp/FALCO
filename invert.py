@@ -31,11 +31,12 @@ def get_latents(net, x):
 
     return codes
 
-# TODO:
-#   /home/lab/code/FALCO_cvpr23/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+# TODO: Warnings to review.
+#   ***/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967:
+#   UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
 #   If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
 #   warnings.warn(
-#   /home/lab/code/FALCO_cvpr23/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
+#   ***/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
 #   If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
 #   warnings.warn(
 
