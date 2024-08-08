@@ -31,15 +31,6 @@ def get_latents(net, x):
 
     return codes
 
-# TODO: Warnings to review.
-#   ***/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967:
-#   UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
-#   If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
-#   warnings.warn(
-#   ***/falco-venv/lib/python3.12/site-packages/torch/utils/cpp_extension.py:1967: UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
-#   If this is not desired, please set os.environ['TORCH_CUDA_ARCH_LIST'].
-#   warnings.warn(
-
 
 def main():
     """Invert the images of a given real dataset using the e4e [1] encoder.
@@ -167,21 +158,10 @@ def main():
     if args.dataset_root is None:
         args.dataset_root = DATASETS[args.dataset]
 
-    dataloader = None
-    out_data_dir = None
-    out_codes_dir = None
-    alignment_errors_file = None
-    face_detection_errors_file = None
-    ####################################################################################################################
-    ##                                                   [ CelebA ]                                                   ##
-    ####################################################################################################################
-    if args.dataset == 'celeba':
-        raise NotImplementedError
-
     ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
     ####################################################################################################################
-    elif args.dataset == 'celebahq':
+    if args.dataset == 'celebahq':
         dataset = CelebAHQ(root_dir=args.dataset_root, subset='train+val+test')
         dataloader = data.DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=False)
 
@@ -193,20 +173,18 @@ def main():
         out_codes_dir = osp.join(out_dir, 'latent_codes')
         os.makedirs(out_codes_dir, exist_ok=True)
 
-        # TODO: Copy annotations dir
-
         # Create files to store errors on alignment and face detection
         alignment_errors_file = osp.join(out_dir, 'alignment_errors.txt')
-        with open(alignment_errors_file, 'w') as f:
+        with open(alignment_errors_file, 'w'):
             pass
         face_detection_errors_file = osp.join(out_dir, 'face_detection_errors.txt')
-        with open(face_detection_errors_file, 'w') as f:
+        with open(face_detection_errors_file, 'w'):
             pass
 
     ####################################################################################################################
-    ##                                                    [ LFW ]                                                     ##
+    ##                                               [ Other Datasets ]                                               ##
     ####################################################################################################################
-    elif args.dataset == 'lfw':
+    else:
         raise NotImplementedError
 
     ####################################################################################################################

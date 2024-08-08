@@ -185,7 +185,6 @@ def main():
         dino_model = torch.hub.load("facebookresearch/dino:main", 'dino_vitb16')
         dino_model.eval()
         dino_model.float()
-        # TODO: cuda()???
 
         dino_img_transform = transforms.Compose([transforms.Resize(224, antialias=True),
                                                  transforms.CenterCrop(224),

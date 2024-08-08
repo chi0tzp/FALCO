@@ -8,4 +8,3 @@ from .arcface import ArcFace
 from .latent_code import LatentCode
 from .id_loss import IDLoss
 from .attr_loss import AttrLoss
-# from .evaluation.sfd.sfd_detector import SFDDetector

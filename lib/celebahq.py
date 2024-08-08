@@ -6,7 +6,6 @@ from torchvision import transforms
 from torch.utils import data
 from PIL import Image
 
-
 class CelebAHQ(data.Dataset):
     def __init__(self, root_dir,
                  subset='train',
@@ -165,8 +164,7 @@ class CelebAHQ(data.Dataset):
             img_nn = self.transform(
                 Image.open(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename], 'image.jpg')))
             img_nn_code = torch.load(osp.join(self.fake_dataset_root, self.nn_map_dict[img_orig_basename],
-                                              'latent_code_w+.pt')).squeeze(0)
-            # TODO::Christos img_nn_code needs to be squeezed like above, check the way it is stored and fix this.
+                                              'latent_code_w+.pt'), weights_only=True).squeeze(0)
 
         # TODO: add comment
         img_recon = torch.zeros_like(img_orig)
@@ -178,7 +176,7 @@ class CelebAHQ(data.Dataset):
             img_recon = self.transform(Image.open(img_recon_path))
 
             img_recon_code_path = osp.join(self.inv_codes_dir, '{}.pt'.format(img_orig_basename.split('.')[0]))
-            img_recon_code = torch.load(img_recon_code_path)
+            img_recon_code = torch.load(img_recon_code_path, weights_only=True)
 
         # TODO: add comment
         img_anon = torch.zeros_like(img_orig)
@@ -190,7 +188,7 @@ class CelebAHQ(data.Dataset):
             img_anon = self.transform(Image.open(img_anon_path))
 
             img_anon_code_path = osp.join(self.anon, 'latent_codes', '{}.pt'.format(img_orig_basename.split('.')[0]))
-            img_anon_code = torch.load(img_anon_code_path)
+            img_anon_code = torch.load(img_anon_code_path, weights_only=True)
 
         # Build output list
         output = [img_orig, img_orig_attr, img_orig_path, img_nn, img_nn_code, img_recon, img_recon_code, img_anon,

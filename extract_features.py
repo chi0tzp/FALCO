@@ -1,4 +1,3 @@
-import sys
 import os
 import os.path as osp
 import argparse
@@ -197,24 +196,17 @@ def main():
     if args.dataset_root is None:
         args.dataset_root = DATASETS[args.dataset]
 
-    dataloader = None
-    ####################################################################################################################
-    ##                                                   [ CelebA ]                                                   ##
-    ####################################################################################################################
-    if args.dataset == 'celeba':
-        raise NotImplementedError
-
     ####################################################################################################################
     ##                                                 [ CelebA-HQ ]                                                  ##
     ####################################################################################################################
-    elif args.dataset == 'celebahq':
+    if args.dataset == 'celebahq':
         dataset = CelebAHQ(root_dir=args.dataset_root, subset='train+val+test')
         dataloader = data.DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=False)
 
     ####################################################################################################################
-    ##                                                    [ LFW ]                                                     ##
+    ##                                               [ Other Datasets ]                                               ##
     ####################################################################################################################
-    elif args.dataset == 'lfw':
+    else:
         raise NotImplementedError
 
     ####################################################################################################################
@@ -240,25 +232,25 @@ def main():
         # Calculate CLIP features
         if not args.no_clip:
             with torch.no_grad():
-                img_feat = clip_model.encode_image(clip_img_transform(data_batch[0].to(device)))
+                img_feat = clip_model.encode_image(clip_img_transform(data_batch[0]).to(device))
             clip_features.append(img_feat.cpu())
 
         # Calculate FaRL features
         if not args.no_farl:
             with torch.no_grad():
-                img_feat = farl_model.encode_image(farl_img_transform(data_batch[0].to(device)))
+                img_feat = farl_model.encode_image(farl_img_transform(data_batch[0]).to(device))
             farl_features.append(img_feat.cpu())
 
         # Calculate DINO features
         if not args.no_dino:
             with torch.no_grad():
-                img_feat = dino_model(dino_img_transform(data_batch[0].to(device)))
+                img_feat = dino_model(dino_img_transform(data_batch[0]).to(device))
             dino_features.append(img_feat.cpu())
 
         # Calculate ArcFace features
         if not args.no_arcface:
             with torch.no_grad():
-                img_feat = arcface_model(arcface_img_transform(data_batch[0].to(device)))
+                img_feat = arcface_model(arcface_img_transform(data_batch[0]).to(device))
             arcface_features.append(img_feat.cpu())
 
     # Save dataset images' filenames

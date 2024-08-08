@@ -10,9 +10,7 @@
 ##                                                                                                                    ##
 ########################################################################################################################
 DATASETS = {
-    'celeba': 'datasets/CelebA/',
     'celebahq': 'datasets/CelebA-HQ/',
-    'lfw': 'datasets/LFW/',
 }
 
 CelebA_classes = ('5_o_Clock_Shadow', 'Arched_Eyebrows', 'Attractive', 'Bags_Under_Eyes', 'Bald', 'Bangs', 'Big_Lips',
