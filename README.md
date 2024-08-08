@@ -78,9 +78,7 @@ Please see [here](doc/datasets.md) for a brief description the real dataset used
 
 ## Anonymization process
 
-The anonymization process of a real dataset involves the following steps. 
-
-<p style="color: red">For <b>CelebA-HQ</b>, the results of the <u>anonymization process</u> described below (for `m=0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0`) can be found  <a href="https://www.dropbox.com/scl/fi/flz8tchptxw8ql9471503/datasets.tar?rlkey=mvhjd1fy8w70k32pss8mm6sv2&st=j9b4t4aa&dl=1">here</a>  (82.6 GiB).</p>
+The anonymization process of a real dataset involves the following steps. For **CelebA-HQ**, the results of the anonymization process described below (for `m=0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0`) can be found [here](https://www.dropbox.com/scl/fi/flz8tchptxw8ql9471503/datasets.tar?rlkey=mvhjd1fy8w70k32pss8mm6sv2&st=j9b4t4aa&dl=1) (82.6 GiB).
 
 
 
