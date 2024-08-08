@@ -78,6 +78,12 @@ Please see [here](doc/datasets.md) for a brief description the real dataset used
 
 ## Anonymization process
 
+The anonymization process of a real dataset involves the following steps. 
+
+<p style="color: red">For <b>CelebA-HQ</b>, the results of the <u>anonymization process</u> described below (for `m=0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0`) can be found  <a href="https://www.dropbox.com/scl/fi/flz8tchptxw8ql9471503/datasets.tar?rlkey=mvhjd1fy8w70k32pss8mm6sv2&st=j9b4t4aa&dl=1">here</a>  (82.6 GiB).</p>
+
+
+
 ### Step 1: Real images feature extraction: `extract_features.py`
 
 Extract features (in the CLIP [6] and/or FaRL [4] and/or DINO [7] and/or ArcFace [5] feature spaces) for the images in a given real dataset using the following script:
