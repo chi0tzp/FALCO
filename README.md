@@ -28,12 +28,6 @@ source falco-venv/bin/activate
 pip install --upgrade pip
 pip install setuptools
 pip install -r requirements.txt
-
-# Install pytorch and torchvision (nightly, CUDA 12.1)
-pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
-
-# Install CLIP (for obtaining the CLIP and FaRL ViT features)
-pip install git+https://github.com/openai/CLIP.git
 ```
 
 For using the aforementioned virtual environment in a Jupyter Notebook, you need to manually add the kernel as follows:

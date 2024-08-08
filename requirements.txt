@@ -1,4 +1,5 @@
-# pip install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu121
+torch
+torchvision
 ipython
 ipykernel
 ipywidgets
@@ -14,3 +15,4 @@ urllib3
 requests
 scipy
 ninja
+clip @ git+https://github.com/openai/CLIP.git
